@@ -62,7 +62,7 @@ public class Laboratorio5 {
         frame.setVisible(true);
     }
 
-    private void loadData() {
+private void loadData() {
     dataEntries = new ArrayList<>();
     try (CSVReader reader = new CSVReader(new FileReader("datos.csv"))) {
         String[] line;
@@ -75,7 +75,6 @@ public class Laboratorio5 {
 }
 
 
-
     private List<String> getUniqueValues(int columnIndex) {
         return dataEntries.stream()
                 .map(entry -> entry.getValue(columnIndex))
@@ -83,15 +82,15 @@ public class Laboratorio5 {
                 .collect(Collectors.toList());
     }
 
-    private void filterData() {
+private void filterData() {
     String filter1 = (String) filter1Combo.getSelectedItem();
     String filter2 = (String) filter2Combo.getSelectedItem();
     String filter3 = (String) filter3Combo.getSelectedItem();
     String filter4 = (String) filter4Combo.getSelectedItem();
 
     Map<String, Long> resultCounts;
-    
-    // Ajuste en la lambda para especificar qué columna quieres usar (ejemplo con columna 0)
+   
+    // Ajuste en la lambda para especificar qué columna se quiere usar (ejemplo con columna 0)
     resultCounts = dataEntries.stream()
             .filter(entry -> entry.matches(filter1, filter2, filter3, filter4))
             .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
@@ -102,38 +101,38 @@ public class Laboratorio5 {
         .limit(3)
         .forEach(entry -> resultArea.append(entry.getKey() + ": " + entry.getValue() + "\n"));
 }
-    
+
+
     private void downloadCSV() {
         try (CSVWriter writer = new CSVWriter(new FileWriter("resultados.csv"))) {
             String[] header = {"Resultado", "Cantidad"};
             writer.writeNext(header);
-            // Aquí deberías agregar la lógica para incluir los datos filtrados
-            // Por simplicidad, no se ha implementado en este ejemplo
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void showChart() {
-    // Crear el conjunto de datos para la gráfica
+private void showChart() {
+    // Creación del conjunto de datos para la gráfica
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-    // Filtrar los datos y contar las ocurrencias de cada valor en la columna 0 (puedes cambiar el índice de columna)
+    // Filtro de los datos y conteo de las ocurrencias de cada valor en la columna 0 
     Map<String, Long> resultCounts = dataEntries.stream()
             .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
 
     // Agregar los datos al dataset para graficar
     resultCounts.forEach((key, value) -> dataset.addValue(value, "Frecuencia", key));
 
-    // Crear la gráfica con los datos
+    // Creación de la gráfica con los datos
     JFreeChart chart = ChartFactory.createBarChart(
-            "Frecuencia de Valores en la Columna 0", // Título del gráfico
-            "Valores", // Etiqueta del eje X
-            "Cantidad", // Etiqueta del eje Y
+            "Frecuencia de Valores", // Título del gráfico
+            "Valores", // Eje X
+            "Cantidad", // Eje Y
             dataset // Conjunto de datos
     );
 
-    // Crear un panel para mostrar la gráfica
+    // Panel para mostrar la gráfica
     ChartPanel chartPanel = new ChartPanel(chart);
     JFrame chartFrame = new JFrame("Gráfica de datos CSV");
     chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -142,7 +141,12 @@ public class Laboratorio5 {
     chartFrame.setVisible(true);
 }
 
- 
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Laboratorio5::new);
+    }
+}
+
 class DataEntry {
     private String[] values;
 
