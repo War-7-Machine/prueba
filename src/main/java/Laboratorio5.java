@@ -115,26 +115,34 @@ public class Laboratorio5 {
     }
 
     private void showChart() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    // Crear el conjunto de datos para la gráfica
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        // Cargar datos para la gráfica (esto es solo un ejemplo)
-        dataset.addValue(1, "Categoria 1", "Valor 1");
-        dataset.addValue(2, "Categoria 1", "Valor 2");
-        dataset.addValue(3, "Categoria 1", "Valor 3");
+    // Filtrar los datos y contar las ocurrencias de cada valor en la columna 0 (puedes cambiar el índice de columna)
+    Map<String, Long> resultCounts = dataEntries.stream()
+            .collect(Collectors.groupingBy(entry -> entry.getValue(0), Collectors.counting()));
 
-        JFreeChart chart = ChartFactory.createBarChart("Ejemplo de Gráfica", "Categoría", "Valor", dataset);
-        ChartPanel chartPanel = new ChartPanel(chart);
-        JFrame chartFrame = new JFrame();
-        chartFrame.add(chartPanel);
-        chartFrame.pack();
-        chartFrame.setVisible(true);
-    }
+    // Agregar los datos al dataset para graficar
+    resultCounts.forEach((key, value) -> dataset.addValue(value, "Frecuencia", key));
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(Laboratorio5::new);
-    }
+    // Crear la gráfica con los datos
+    JFreeChart chart = ChartFactory.createBarChart(
+            "Frecuencia de Valores en la Columna 0", // Título del gráfico
+            "Valores", // Etiqueta del eje X
+            "Cantidad", // Etiqueta del eje Y
+            dataset // Conjunto de datos
+    );
+
+    // Crear un panel para mostrar la gráfica
+    ChartPanel chartPanel = new ChartPanel(chart);
+    JFrame chartFrame = new JFrame("Gráfica de datos CSV");
+    chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    chartFrame.add(chartPanel);
+    chartFrame.pack();
+    chartFrame.setVisible(true);
 }
 
+ 
 class DataEntry {
     private String[] values;
 
